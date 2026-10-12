@@ -1331,3 +1331,4 @@ console.log("AI Hand Energy Mesh Studio loaded — line-only rendering enabled."
 
 
 
+    color: var(--text);
