@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#020617">
+    <title>AI Hand Energy Mesh Studio</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <main class="app" id="app">
+        <video id="webcam" autoplay playsinline muted></video>
+        <canvas id="fxCanvas" aria-hidden="true"></canvas>
+        <canvas id="captureCanvas" class="capture-canvas" aria-hidden="true"></canvas>
+
+        <div class="screen-vignette" aria-hidden="true"></div>
+        <div class="scan-grid" aria-hidden="true"></div>
+
+        <header class="topbar chrome">
+            <div class="brand">
+                <div class="brand-mark" aria-hidden="true">
+                    <span></span><span></span><span></span>
+                </div>
+                <div>
+                    <h1>AI Hand Energy Mesh</h1>
+                    <p>Real-time two-hand reactive line visualizer</p>
+                </div>
+            </div>
+
+            <div class="topbar-right">
+                <div class="quality-pill" id="qualityBadge">AUTO QUALITY</div>
+                <div class="live-pill">
+                    <span class="live-dot" id="liveDot"></span>
+                    <span id="cameraStatus">Ready</span>
+                </div>
+            </div>
+        </header>
+
+        <aside class="control-panel chrome" aria-label="Control panel">
+            <div class="panel-heading">
+                <div>
+                    <span class="eyebrow">VISION ENGINE</span>
+                    <h2>Live controls</h2>
+                </div>
+                <button class="icon-button" id="collapsePanelButton" title="Collapse panel" type="button">−</button>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <span>FPS</span>
+                    <strong id="fps">0</strong>
+                </div>
+                <div class="stat-card">
+                    <span>Hands</span>
+                    <strong id="handCount">0</strong>
+                </div>
+                <div class="stat-card wide">
+                    <span>Gesture</span>
+                    <strong id="gesture">No hand</strong>
+                </div>
+                <div class="stat-card wide">
+                    <span>Hand distance</span>
+                    <strong id="distanceValue">—</strong>
+                </div>
+            </div>
+
+            <div class="section-label">Visual style</div>
+
+            <label class="field">
+                <span>Energy mode</span>
+                <select id="effectMode">
+                    <option value="prism">Prism Web</option>
+                    <option value="aurora">Aurora Flow</option>
+                    <option value="laser">Cyber Laser</option>
+                    <option value="sunset">Solar Fusion</option>
+                    <option value="mono">Ice White</option>
+                </select>
+            </label>
+
+            <label class="field range-field">
+                <span class="range-head"><span>Line density</span><b id="densityValue">42</b></span>
+                <input id="lineDensity" type="range" min="12" max="84" step="1" value="42">
+            </label>
+
+            <label class="field range-field">
+                <span class="range-head"><span>Line width</span><b id="widthValue">1.6</b></span>
+                <input id="lineWidth" type="range" min="0.6" max="4" step="0.1" value="1.6">
+            </label>
+
+            <label class="field range-field">
+                <span class="range-head"><span>Glow</span><b id="glowValue">24</b></span>
+                <input id="glowAmount" type="range" min="0" max="42" step="1" value="24">
+            </label>
+
+            <label class="field range-field">
+                <span class="range-head"><span>Stabilization</span><b id="smoothingValue">72%</b></span>
+                <input id="smoothing" type="range" min="20" max="92" step="1" value="72">
+            </label>
+
+            <label class="field range-field">
+                <span class="range-head"><span>Motion trails</span><b id="trailValue">4</b></span>
+                <input id="trailLength" type="range" min="0" max="8" step="1" value="4">
+            </label>
+
+            <div class="section-label">Engine</div>
+
+            <label class="switch-row">
+                <span><b>Hand wireframe</b><small>Lines only, no landmark dots</small></span>
+                <input id="wireframeToggle" type="checkbox" checked>
+            </label>
+
+            <label class="switch-row">
+                <span><b>Motion trails</b><small>Faded history while moving</small></span>
+                <input id="trailsToggle" type="checkbox" checked>
+            </label>
+
+            <label class="switch-row">
+                <span><b>Auto quality</b><small>Adapts line count to FPS</small></span>
+                <input id="autoQualityToggle" type="checkbox" checked>
+            </label>
+
+            <label class="switch-row">
+                <span><b>Mirror camera</b><small>Natural selfie movement</small></span>
+                <input id="mirrorToggle" type="checkbox" checked>
+            </label>
+        </aside>
+
+        <aside class="gesture-panel chrome">
+            <div class="gesture-title">
+                <span class="eyebrow">GESTURE REACTIVITY</span>
+                <h3>How the mesh responds</h3>
+            </div>
+
+            <div class="gesture-list">
+                <div class="gesture-row"><span>🖐</span><div><b>Open palm</b><small>Expands and fans the web</small></div></div>
+                <div class="gesture-row"><span>🤏</span><div><b>Pinch</b><small>Tightens and focuses lines</small></div></div>
+                <div class="gesture-row"><span>✊</span><div><b>Fist</b><small>Boosts glow and energy</small></div></div>
+                <div class="gesture-row"><span>✌</span><div><b>Peace</b><small>Cycles color mode</small></div></div>
+                <div class="gesture-row"><span>🙌</span><div><b>Two hands</b><small>Activates full cross-hand mesh</small></div></div>
+            </div>
+
+            <div class="hint-card">
+                Keep both hands visible and separated for the strongest effect.
+            </div>
+        </aside>
+
+        <div class="bottom-toolbar chrome">
+            <button class="tool-button" id="screenshotButton" type="button"><span>📸</span><b>Shot</b></button>
+            <button class="tool-button" id="recordButton" type="button"><span id="recordIcon">⏺</span><b id="recordLabel">Record</b></button>
+            <button class="tool-button primary" id="pauseButton" type="button"><span id="pauseIcon">⏸</span><b id="pauseLabel">Pause</b></button>
+            <button class="tool-button" id="fullscreenButton" type="button"><span>⛶</span><b>Fullscreen</b></button>
+            <button class="tool-button" id="hideUiButton" type="button"><span>◫</span><b>Hide UI</b></button>
+        </div>
+
+        <button id="showUiButton" class="show-ui-button" type="button">Show controls</button>
+
+        <section class="start-screen" id="startScreen">
+            <div class="start-orb" aria-hidden="true"></div>
+            <div class="start-card">
+                <div class="start-badge">REAL-TIME COMPUTER VISION</div>
+                <h2>AI Hand Energy Mesh</h2>
+                <p>
+                    Move two hands in front of the camera to create a high-density,
+                    multi-color line network that follows your motion in real time.
+                </p>
+
+                <div class="feature-chips">
+                    <span>2-hand tracking</span>
+                    <span>21 landmarks / hand</span>
+                    <span>Adaptive FPS</span>
+                    <span>No particle dots</span>
+                </div>
+
+                <button id="startButton" class="start-button" type="button">
+                    <span>Start AI Camera</span>
+                    <small>Camera permission is required</small>
+                </button>
+
+                <div class="start-note" id="startNote">
+                    Run this project from <code>http://localhost:5500</code> for camera access.
+                </div>
+            </div>
+        </section>
+
+        <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+    <script src="app.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+<button id="startButton" class="start-button" type="button">
+                    <span>Start AI Camera</span>
+                    <small>Camera permission is required</small>
+                </button>
