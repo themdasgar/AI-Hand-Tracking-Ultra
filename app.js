@@ -1320,3 +1320,17 @@ setStatus("Ready");
 renderRafId = requestAnimationFrame(renderFrame);
 
 console.log("AI Hand Energy Mesh Studio loaded — line-only rendering enabled.");
+
+
+
+
+
+
+
+
+
+
+
+{
+    "liveServer.settings.port": 5501
+}
