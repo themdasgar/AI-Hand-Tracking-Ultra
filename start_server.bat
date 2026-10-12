@@ -32,3 +32,13 @@ pause
 
 :end
 endlocal
+
+
+
+
+
+
+
+
+
+    color: var(--text);
