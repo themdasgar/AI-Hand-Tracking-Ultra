@@ -41,4 +41,3 @@ endlocal
 
 
 
-    color: var(--text);
