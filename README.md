@@ -67,5 +67,4 @@ The project loads MediaPipe Hands from a CDN, so internet is required when the A
 For the strongest visual effect, keep both hands visible, with some distance between them, and use even lighting.
    
 
-
-   this is not a simple project nice project
+   

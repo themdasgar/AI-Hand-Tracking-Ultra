@@ -39,4 +39,4 @@ endlocal
 
 
 
-
+where py >nul 2>nul
