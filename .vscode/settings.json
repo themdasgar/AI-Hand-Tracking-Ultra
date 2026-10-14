@@ -6,7 +6,3 @@
 
 
 
-document.addEventListener("visibilitychange", () => {
-    if (document.hidden && engineRunning && !enginePaused) {
-        setPaused(true);
-    }

@@ -1325,7 +1325,10 @@ console.log("AI Hand Energy Mesh Studio loaded — line-only rendering enabled."
 
 
 
-
+document.addEventListener("visibilitychange", () => {
+    if (document.hidden && engineRunning && !enginePaused) {
+        setPaused(true);
+    }
 
 
 
